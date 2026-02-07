@@ -1,33 +1,46 @@
 import '@testing-library/jest-dom/vitest'
 
+// Mock vosk-browser (uses Web Workers, not available in jsdom)
+vi.mock('vosk-browser', () => ({
+  createModel: vi.fn().mockResolvedValue({
+    setLogLevel: vi.fn(),
+    terminate: vi.fn(),
+    KaldiRecognizer: vi.fn().mockImplementation(() => ({
+      setWords: vi.fn(),
+      on: vi.fn(),
+      remove: vi.fn(),
+      acceptWaveform: vi.fn(),
+    })),
+  }),
+}))
+
 // Mock HTMLCanvasElement.getContext (jsdom doesn't support canvas)
 HTMLCanvasElement.prototype.getContext = vi.fn().mockReturnValue({
   clearRect: vi.fn(),
   fillRect: vi.fn(),
   fillStyle: '',
+  beginPath: vi.fn(),
+  moveTo: vi.fn(),
+  lineTo: vi.fn(),
+  stroke: vi.fn(),
+  arc: vi.fn(),
+  fill: vi.fn(),
+  scale: vi.fn(),
+  lineWidth: 0,
+  strokeStyle: '',
 }) as unknown as typeof HTMLCanvasElement.prototype.getContext
 
-// Mock SpeechRecognition
-class MockSpeechRecognition {
-  continuous = false
-  interimResults = false
-  lang = ''
-  onresult: ((event: unknown) => void) | null = null
-  onerror: ((event: unknown) => void) | null = null
-  onend: (() => void) | null = null
-
-  start(): void {
-    // no-op in tests
-  }
-
-  stop(): void {
-    this.onend?.()
-  }
-
-  abort(): void {
-    this.onend?.()
-  }
+// Mock ResizeObserver
+class MockResizeObserver {
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
 }
+
+Object.defineProperty(window, 'ResizeObserver', {
+  writable: true,
+  value: MockResizeObserver
+})
 
 // Mock SpeechSynthesis
 const mockSpeechSynthesis = {
@@ -41,16 +54,6 @@ const mockSpeechSynthesis = {
   pending: false,
   onvoiceschanged: null
 }
-
-Object.defineProperty(window, 'SpeechRecognition', {
-  writable: true,
-  value: MockSpeechRecognition
-})
-
-Object.defineProperty(window, 'webkitSpeechRecognition', {
-  writable: true,
-  value: MockSpeechRecognition
-})
 
 Object.defineProperty(window, 'speechSynthesis', {
   writable: true,
@@ -66,6 +69,9 @@ Object.defineProperty(window, 'electronAPI', {
       voiceEnabled: true,
       visualizerEnabled: true
     }),
-    setSettings: vi.fn().mockResolvedValue(undefined)
+    setSettings: vi.fn().mockResolvedValue(undefined),
+    minimize: vi.fn(),
+    maximize: vi.fn(),
+    close: vi.fn()
   }
 })

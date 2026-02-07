@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 
 interface UseAudioVisualizerReturn {
-  analyserData: Uint8Array | null
+  frequencyData: Uint8Array | null
+  timeDomainData: Uint8Array | null
   isActive: boolean
   start: () => Promise<void>
   stop: () => void
@@ -9,7 +10,8 @@ interface UseAudioVisualizerReturn {
 
 export function useAudioVisualizer(): UseAudioVisualizerReturn {
   const [isActive, setIsActive] = useState(false)
-  const [analyserData, setAnalyserData] = useState<Uint8Array | null>(null)
+  const [frequencyData, setFrequencyData] = useState<Uint8Array | null>(null)
+  const [timeDomainData, setTimeDomainData] = useState<Uint8Array | null>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null)
@@ -18,9 +20,15 @@ export function useAudioVisualizer(): UseAudioVisualizerReturn {
 
   const updateData = useCallback(() => {
     if (!analyserRef.current) return
-    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount)
-    analyserRef.current.getByteFrequencyData(dataArray)
-    setAnalyserData(new Uint8Array(dataArray))
+
+    const freqArray = new Uint8Array(analyserRef.current.frequencyBinCount)
+    analyserRef.current.getByteFrequencyData(freqArray)
+    setFrequencyData(new Uint8Array(freqArray))
+
+    const timeArray = new Uint8Array(analyserRef.current.frequencyBinCount)
+    analyserRef.current.getByteTimeDomainData(timeArray)
+    setTimeDomainData(new Uint8Array(timeArray))
+
     animationRef.current = requestAnimationFrame(updateData)
   }, [])
 
@@ -61,7 +69,8 @@ export function useAudioVisualizer(): UseAudioVisualizerReturn {
     streamRef.current = null
 
     setIsActive(false)
-    setAnalyserData(null)
+    setFrequencyData(null)
+    setTimeDomainData(null)
   }, [])
 
   useEffect(() => {
@@ -70,5 +79,5 @@ export function useAudioVisualizer(): UseAudioVisualizerReturn {
     }
   }, [stop])
 
-  return { analyserData, isActive, start, stop }
+  return { frequencyData, timeDomainData, isActive, start, stop }
 }

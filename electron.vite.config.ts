@@ -27,6 +27,7 @@ export default defineConfig({
   renderer: {
     plugins: [react()],
     root: 'src/renderer',
+    publicDir: 'public',
     build: {
       outDir: '../../out/renderer',
       rollupOptions: {
@@ -34,6 +35,9 @@ export default defineConfig({
           index: 'src/renderer/index.html'
         }
       }
+    },
+    optimizeDeps: {
+      include: ['vosk-browser']
     }
   }
 })

@@ -7,3 +7,4 @@ dist/
 .env
 .claude/
 .playwright-mcp/
+src/renderer/public/models/
