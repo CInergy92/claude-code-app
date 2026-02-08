@@ -67,11 +67,27 @@ Object.defineProperty(window, 'electronAPI', {
     getSettings: vi.fn().mockResolvedValue({
       language: 'en-US',
       voiceEnabled: true,
-      visualizerEnabled: true
+      visualizerEnabled: true,
+      visualizerMode: 'bars',
+      avatar: {
+        enabled: true,
+        accentColor: '#6c63ff',
+        eyeStyle: 'round'
+      },
+      anthropicApiKey: '',
+      chatHistoryLimit: 50
     }),
     setSettings: vi.fn().mockResolvedValue(undefined),
     minimize: vi.fn(),
     maximize: vi.fn(),
-    close: vi.fn()
+    close: vi.fn(),
+    saveTranscript: vi.fn().mockResolvedValue(true),
+    sendChatMessage: vi.fn().mockResolvedValue({
+      response: 'Hello! How can I help you?',
+      emotion: 'happy'
+    }),
+    loadChatHistory: vi.fn().mockResolvedValue([]),
+    saveChatHistory: vi.fn().mockResolvedValue(undefined),
+    clearChatHistory: vi.fn().mockResolvedValue(undefined)
   }
 })

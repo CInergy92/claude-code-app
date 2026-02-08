@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import type { TranscriptEntry } from '../../shared/types'
 import styles from './TranscriptPanel.module.css'
 
@@ -5,6 +6,7 @@ interface TranscriptPanelProps {
   entries: TranscriptEntry[]
   onClear: () => void
   onSpeak: (text: string) => void
+  onExport: () => void
 }
 
 function SpeakerIcon(): JSX.Element {
@@ -20,18 +22,32 @@ function formatTime(timestamp: number): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 }
 
-export function TranscriptPanel({ entries, onClear, onSpeak }: TranscriptPanelProps): JSX.Element {
+export function TranscriptPanel({ entries, onClear, onSpeak, onExport }: TranscriptPanelProps): JSX.Element {
+  const entriesRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = entriesRef.current
+    if (el) {
+      el.scrollTop = el.scrollHeight
+    }
+  }, [entries])
+
   return (
     <div className={styles.panel}>
       <div className={styles.header}>
         <h2 className={styles.title}>Transcript</h2>
         {entries.length > 0 && (
-          <button className={styles.clearBtn} onClick={onClear}>
-            Clear
-          </button>
+          <div className={styles.actions}>
+            <button className={styles.clearBtn} onClick={onExport}>
+              Export
+            </button>
+            <button className={styles.clearBtn} onClick={onClear}>
+              Clear
+            </button>
+          </div>
         )}
       </div>
-      <div className={styles.entries}>
+      <div ref={entriesRef} className={styles.entries}>
         {entries.length === 0 ? (
           <p className={styles.empty}>
             Press the microphone button to start listening...
