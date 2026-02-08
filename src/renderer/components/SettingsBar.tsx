@@ -6,6 +6,8 @@ interface SettingsBarProps {
   onLanguageChange: (lang: string) => void
   visualizerMode: VisualizerMode
   onVisualizerModeChange: (mode: VisualizerMode) => void
+  showCustomizer: boolean
+  onToggleCustomizer: () => void
 }
 
 const LANGUAGES = [
@@ -32,6 +34,8 @@ export function SettingsBar({
   onLanguageChange,
   visualizerMode,
   onVisualizerModeChange,
+  showCustomizer,
+  onToggleCustomizer,
 }: SettingsBarProps): JSX.Element {
   return (
     <div className={styles.bar}>
@@ -63,6 +67,13 @@ export function SettingsBar({
           ))}
         </select>
       </div>
+      <button
+        className={`${styles.avatarBtn} ${showCustomizer ? styles.avatarBtnActive : ''}`}
+        onClick={onToggleCustomizer}
+        title="Avatar settings"
+      >
+        Avatar
+      </button>
     </div>
   )
 }

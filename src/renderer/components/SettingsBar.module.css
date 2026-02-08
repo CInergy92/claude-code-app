@@ -38,3 +38,27 @@
 .select:focus {
   border-color: var(--accent);
 }
+
+.avatarBtn {
+  margin-left: auto;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.avatarBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.avatarBtnActive {
+  background: rgba(108, 99, 255, 0.15);
+  color: var(--accent);
+  border-color: var(--accent);
+}
