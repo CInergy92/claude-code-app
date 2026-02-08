@@ -210,15 +210,7 @@ export function Avatar({
 
         {/* Mouth */}
         <g className={styles.mouth}>
-          <path
-            d={expr.mouthPath}
-            fill="none"
-            stroke="var(--text-primary)"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-          {/* Speaking open mouth overlay */}
-          {speakingOpen > 0 && (
+          {speakingOpen > 0 ? (
             <ellipse
               cx="100"
               cy="135"
@@ -227,6 +219,14 @@ export function Avatar({
               fill="var(--bg-primary)"
               stroke="var(--text-primary)"
               strokeWidth="2"
+            />
+          ) : (
+            <path
+              d={expr.mouthPath}
+              fill="none"
+              stroke="var(--text-primary)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
             />
           )}
         </g>
